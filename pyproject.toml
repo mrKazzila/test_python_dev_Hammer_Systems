@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Test Task for Hammer Systems"
 authors = ["mrKazzila <mrkazzila@gmail.com>"]
 readme = "README.md"
-packages = [{include = "test_python_dev_hammer_systems"}]
 
 
 [tool.poetry.dependencies]
@@ -13,7 +12,6 @@ python-dotenv = "^1.0.0"
 djangorestframework = "^3.14.0"
 psycopg2-binary = "^2.9.5"
 django = "^4.2.4"
-
 
 
 [tool.poetry.group.dev.dependencies]
