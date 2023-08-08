@@ -27,7 +27,7 @@ jobs:
         run: poetry install --only dev
 
       - name: Run flake8 from poetry
-        run: poetry run flake8 --config=style/.flake8 app
+        run: poetry run flake8 --config=code_checkers/.flake8 app
 
       - name: Run bandit from poetry
-        run: poetry run bandit -r -c style/bandit.yaml app
+        run: poetry run bandit -r -c code_checkers/bandit.yaml app
