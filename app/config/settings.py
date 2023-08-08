@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 
 # Path settings
 BASE_DIR = Path(__file__).resolve().parent.parent
-ROOT_DIR = BASE_DIR.resolve().parent.parent
-APPS_DIR = BASE_DIR.resolve().parent
+ROOT_DIR = BASE_DIR.resolve().parent
 ENV_DIR = Path(ROOT_DIR / 'env').resolve()
 
 # Load env from file
