@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "test-python-dev-hammer-systems"
+version = "0.1.0"
+description = "Test Task for Hammer Systems"
+authors = ["mrKazzila <mrkazzila@gmail.com>"]
+readme = "README.md"
+packages = [{include = "test_python_dev_hammer_systems"}]
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+pep8-naming = "^0.13.3"
+yapf = "^0.32.0"
+toml = "^0.10.2"
+pre-commit = "^3.3.0"
+flake8 = "^6.0.0"
+flake8-import-order = "^0.18.2"
+flake8-builtins = "^2.1.0"
+flake8-quotes = "^3.3.2"
+flake8-bugbear = "^23.5.9"
+flake8-commas = "^2.1.0"
+bandit = "^1.7.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.yapfignore]
+ignore_patterns = [
+  ".venv/*",
+  "pytest_",
+  "**/migrations/*",
+  "app/manage.py",
+]
