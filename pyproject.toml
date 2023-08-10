@@ -15,7 +15,6 @@ djangorestframework = "^3.14.0"
 drf-yasg = "^1.21.7"
 djangorestframework-simplejwt = "^5.2.2"
 
-
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
 pytest-django = "^4.5.2"
