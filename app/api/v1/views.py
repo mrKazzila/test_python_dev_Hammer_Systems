@@ -76,7 +76,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
         """
         user = self._get_object
 
-        logger.info(f'TEST. User {user.username} requested their data.')
+        logger.info(f'User {user.username} requested their data.')
         serializer = self.get_serializer(user)
 
         return Response(serializer.data, status=HTTP_200_OK)
@@ -92,7 +92,7 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             The HTTP response.
         """
         user = self._get_object
-        logger.info(f'TEST. User {user.username} requested to update their data.')
+        logger.info(f'User {user.username} requested to update their data.')
 
         serializer = self.get_serializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -124,25 +124,21 @@ class GenerateTokenAndReferralCodeView(APIView):
         code_value = serializer.data.get('code')
         code = get_object_or_404(ActivationCode, code=code_value)
 
-        logger.error(f'TEST. code {code}')
-
         if not code:
-            logger.warning('TEST. Activation code not found')
+            logger.warning('Activation code not found')
             return Response('Activation code not found', status=HTTP_400_BAD_REQUEST)
 
         user = code.user
         code.delete()
 
-        # ReferralCode.objects.get_or_create(owner=user)
-
         referral, _ = ReferralCode.objects.get_or_create(owner=user)
         referral_code = str(referral.referral_code)
 
-        logger.info(f'TEST. Generating token and referral code for user {user.username}')
+        logger.info(f'Generating token and referral code for user {user.username}')
         user = User.objects.get(username=user)
 
         token = default_token_generator.make_token(user)
-        user.invite_code = referral_code
+        user.referral_code = referral_code
         user.save()
 
         response_data = {'Your token': str(token), 'Your referral code': referral_code}
@@ -165,12 +161,12 @@ class GenerateTokenAndReferralCodeView(APIView):
 
             if referral:
                 referral.delete()
-                logger.info('TEST. Referral code deleted')
+                logger.info('Referral code deleted')
                 return Response('Referral code successfully deleted', status=HTTP_204_NO_CONTENT)
             else:
-                logger.warning('TEST. Referral code not found')
+                logger.warning('Referral code not found')
                 return Response('Referral code not found', status=HTTP_404_NOT_FOUND)
 
         else:
-            logger.warning('TEST. User not authenticated')
+            logger.warning('User not authenticated')
             return Response('User is not authenticated', status=HTTP_401_UNAUTHORIZED)
