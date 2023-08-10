@@ -1,5 +1,4 @@
 import logging
-import time
 
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
@@ -17,6 +16,7 @@ from rest_framework.views import APIView
 
 from referrals.models import ReferralCode
 from users.models import ActivationCode, User
+from users.tasks import send_activation_code
 from .serializers import TokenSerializer, UserSerializer, UsersSerializer
 
 logger = logging.getLogger(__name__)
@@ -46,13 +46,13 @@ class CreateUserAndSendConfirmCodeView(APIView):
         if not created:
             return Response(status=HTTP_400_BAD_REQUEST)
 
-        # send confirm code
-        time.sleep(2)
-        code = ActivationCode.objects.create(user=user)
-        # end
+        # Fake send activation code
+        task = send_activation_code.delay(username)
+        # Just for example. Cos '.get()' make execution task by sync
+        code = task.get(timeout=3)
 
-        logger.info(f'Created user {user.username} with confirmation code {code.code}')
-        return Response({'Your activation code': str(code.code)}, status=HTTP_200_OK)
+        logger.info(f'Created user {user.username} with confirmation code {code}')
+        return Response({'Your activation code': str(code)}, status=HTTP_200_OK)
 
 
 class CurrentUserViewSet(viewsets.ModelViewSet):
