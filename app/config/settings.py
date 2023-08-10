@@ -1,4 +1,5 @@
-from os import environ
+from datetime import timedelta
+from os import environ, getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -16,11 +17,11 @@ load_dotenv(dotenv_path=dotenv_path)
 DEBUG = environ['DJANGO_DEBUG']
 SECRET_KEY = environ['DJANGO_SECRET_KEY']
 ALLOWED_HOSTS = environ['DJANGO_ALLOWED_HOSTS'].split(',')
-DOMAIN_NAME = environ['DOMAIN_NAME'] if not DEBUG else 'http://127.0.0.1:8000/'
 
 # Application definition
 INSTALLED_APPS = [
     # Default apps
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,10 +29,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party apps
+    'drf_yasg',
+
     # DRF
     'rest_framework',
+    'rest_framework_simplejwt',
 
     # My apps
+    'users.apps.UsersConfig',
+    'referrals.apps.ReferralsConfig',
+    'api.apps.ApiConfig',
 
 ]
 
@@ -68,9 +76,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': environ['DATABASE_ENGINE'],
+        'NAME': environ['DATABASE_NAME'],
+        'USER': environ['DATABASE_USER'],
+        'PASSWORD': environ['DATABASE_PASSWORD'],
+        'HOST': environ['DATABASE_HOST'],
+        'PORT': environ['DATABASE_PORT'],
+    },
 }
 
 # Password validation
@@ -96,10 +108,55 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = 'static/'
-
-# Media files
-MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SITE_ID = 1
+
+AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=150),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'custom_formatter': {
+            'format': '[%(asctime)s] %(levelname)s %(module)s %(process)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'custom_formatter',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    },
+}
