@@ -28,8 +28,7 @@ class CreateUserAndSendConfirmCodeView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        """
-        Creates a user and sends a confirmation code to the user's phone number.
+        """Create a user and sends a confirmation code to the user's phone number.
 
         Args:
             request: The HTTP request.
@@ -105,15 +104,13 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
 
 
 class GenerateTokenAndReferralCodeView(APIView):
-    """
-    Generate a token and referral code for the user and returns them.
-    """
+    """Generate a token and referral code for the user and returns them."""
 
     permission_classes = [AllowAny]
 
     def post(self, request):
         """
-        Checks the activation code and returns the user token and referral code.
+        Check the activation code and returns the user token and referral code.
 
         Args:
             request: The HTTP request.
@@ -153,7 +150,7 @@ class GenerateTokenAndReferralCodeView(APIView):
 
     def delete(self, request):
         """
-        Deletes the referral code for the authenticated user.
+        Delete the referral code for the authenticated user.
 
         Args:
             request: The HTTP request.

@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'referrals.apps.ReferralsConfig',
     'api.apps.ApiConfig',
-
 ]
 
 MIDDLEWARE = [

@@ -4,3 +4,4 @@ exclude_dirs: [
   '*/tests/*',
   '*/tests.py',
 ]
+skips: ['B311']

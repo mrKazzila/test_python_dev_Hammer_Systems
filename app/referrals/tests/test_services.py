@@ -1,4 +1,4 @@
-from string import ascii_uppercase, ascii_lowercase, digits
+from string import ascii_lowercase, ascii_uppercase, digits
 
 import pytest
 

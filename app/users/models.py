@@ -45,11 +45,11 @@ class User(AbstractUser):
     referral_code_list = models.ManyToManyField(
         ReferralCode,
         verbose_name='List of referral users',
-        through='AddReferralCode'
+        through='AddReferralCode',
     )
 
     USERNAME_FIELD = 'phone_number'
-    REQUIRED_FIELDS = ('username', )
+    REQUIRED_FIELDS = ('username',)
 
     def __str__(self):
         return self.username

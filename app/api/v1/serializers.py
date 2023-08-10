@@ -28,10 +28,7 @@ class ReferralCodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReferralCode
-        fields = (
-            'owner',
-            'referral_code'
-        )
+        fields = ('owner', 'referral_code')
 
 
 class UsersSerializer(serializers.ModelSerializer):
