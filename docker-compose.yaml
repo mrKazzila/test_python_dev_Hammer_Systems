@@ -20,6 +20,8 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+      - redis
+      - celery
 
   postgres:
     container_name: local-postgres-15.3
@@ -28,6 +30,42 @@ services:
       - env/.env.db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+
+  redis:
+    container_name: local-redis-7.0.5-alpine
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  celery:
+    container_name: local-celery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - env/.env
+    environment:
+      - REDIS_HOST=redis
+    entrypoint: celery
+    command: --workdir=./app -A config worker --loglevel=info
+    volumes:
+      - .:/home/app/referral
+    depends_on:
+      - redis
+
+  flower:
+    container_name: local-flower
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: flower
+    entrypoint: celery
+    command: --workdir=./app -A config flower
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+#    volumes:
+#      - .:/home/app/referral
 
 volumes:
   postgres_data:
