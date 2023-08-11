@@ -45,13 +45,13 @@ class CreateUserAndSendConfirmCodeView(APIView):
         if not created:
             return Response(status=HTTP_400_BAD_REQUEST)
 
-        # Fake send activation code
+        # Fake send activation code.
         task = send_activation_code.delay(username)
-        # Just for example. Cos '.get()' make execution task by sync
+        # Just for example. Cos '.get()' make execution task by sync.
         code = task.get(timeout=3)
 
         logger.info(f'Created user {user.username} with confirmation code {code}')
-        return Response({'Your activation code': str(code)}, status=HTTP_200_OK)
+        return Response({'code': str(code)}, status=HTTP_200_OK)
 
 
 class CurrentUserViewSet(viewsets.ModelViewSet):
@@ -91,15 +91,31 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
             The HTTP response.
         """
         user = self._get_object
-        logger.info(f'User {user.username} requested to update their data.')
+        referral_code = request.data.get('referral_code')
 
-        serializer = self.get_serializer(user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        if not referral_code:
+            return Response({'error': 'Please provide a referral code.'}, status=HTTP_400_BAD_REQUEST)
 
-        logger.info(f'User {user.username} updated their data.')
+        # Check if the referral code exists and is not already used.
+        referral_code_obj = ReferralCode.objects.filter(referral_code=referral_code).first()
 
-        return Response(serializer.data, status=HTTP_200_OK)
+        if not referral_code_obj:
+            return Response({'error': 'The referral code does not exist.'}, status=HTTP_400_BAD_REQUEST)
+        if referral_code_obj.used:
+            return Response({'error': 'The referral code has already been used.'}, status=HTTP_400_BAD_REQUEST)
+
+        # Add the referral code to the user's used_referral_code field.
+        logger.debug('Add the referral code to the users used_referral_code field.')
+        user.used_referral_code = referral_code
+        user.save()
+
+        # Update the referral_users_list field of the referral code's owner.
+        referral_code_owner = referral_code_obj.owner
+        logger.debug(f'Get {referral_code_owner=}')
+        referral_code_owner.referral_users_list.add(user)
+        referral_code_owner.save()
+
+        return Response({'success': 'Referral code added successfully.'}, status=HTTP_200_OK)
 
 
 class GenerateTokenAndReferralCodeView(APIView):
@@ -137,7 +153,7 @@ class GenerateTokenAndReferralCodeView(APIView):
         user.referral_code = referral_code
         user.save()
 
-        response_data = {'Your token': str(token), 'Your referral code': referral_code}
+        response_data = {'token': str(token), 'referral code': referral_code}
         return Response(response_data, status=HTTP_200_OK)
 
     def delete(self, request):
