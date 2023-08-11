@@ -8,7 +8,7 @@ class ReferralCode(models.Model):
     """Referral Code Model."""
 
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        to=settings.AUTH_USER_MODEL,
         verbose_name='Referral code owner',
         on_delete=models.CASCADE,
     )
@@ -24,3 +24,7 @@ class ReferralCode(models.Model):
 
     def __str__(self):
         return f'User {self.owner} is owner referral code {self.referral_code}'
+
+    @property
+    def get_owner_phone(self):
+        return self.owner.phone_number
