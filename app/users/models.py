@@ -42,8 +42,8 @@ class User(AbstractUser):
         max_length=6,
         blank=True,
     )
-    referral_code_list = models.ManyToManyField(
-        ReferralCode,
+    referral_users_list = models.ManyToManyField(
+        to=ReferralCode,
         verbose_name='List of referral users',
         through='AddReferralCode',
     )
@@ -59,7 +59,7 @@ class ActivationCode(models.Model):
     """Model of activation code."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
     )
     code = models.CharField(
@@ -79,11 +79,11 @@ class AddReferralCode(models.Model):
     """Model for adding an invitation code."""
 
     user = models.ForeignKey(
-        User,
+        to=User,
         on_delete=models.CASCADE,
     )
     referral_code = models.ForeignKey(
-        ReferralCode,
+        to=ReferralCode,
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(
