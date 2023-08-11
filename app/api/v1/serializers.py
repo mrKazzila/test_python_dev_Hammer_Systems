@@ -66,8 +66,7 @@ class UsersSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        # Overwrite the default update method to support writable nested fields.
-
+        """Overwrite the default update method to support writable nested fields."""
         is_code_already_exist = instance.used_referral_code
         if is_code_already_exist != '':
             return instance
