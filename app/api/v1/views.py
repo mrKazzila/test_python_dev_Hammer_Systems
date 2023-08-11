@@ -54,70 +54,6 @@ class CreateUserAndSendConfirmCodeView(APIView):
         return Response({'code': str(code)}, status=HTTP_200_OK)
 
 
-class CurrentUserViewSet(viewsets.ModelViewSet):
-    """Viewset provides an API for users to get and edit their own data."""
-
-    queryset = User.objects.all()
-    serializer_class = UsersSerializer
-    lookup_field = 'username'
-
-    @property
-    def _get_object(self):
-        """Returns the current user."""
-        return self.request.user
-
-    def get(self):
-        """
-        Get the current user's data.
-
-        Returns:
-            The HTTP response.
-        """
-        user = self._get_object
-
-        logger.info(f'User {user.username} requested their data.')
-        serializer = self.get_serializer(user)
-
-        return Response(serializer.data, status=HTTP_200_OK)
-
-    def patch(self, request):
-        """
-        Update the current user's data.
-
-        Args:
-            request: The HTTP request.
-
-        Returns:
-            The HTTP response.
-        """
-        user = self._get_object
-        referral_code = request.data.get('referral_code')
-
-        if not referral_code:
-            return Response({'error': 'Please provide a referral code.'}, status=HTTP_400_BAD_REQUEST)
-
-        # Check if the referral code exists and is not already used.
-        referral_code_obj = ReferralCode.objects.filter(referral_code=referral_code).first()
-
-        if not referral_code_obj:
-            return Response({'error': 'The referral code does not exist.'}, status=HTTP_400_BAD_REQUEST)
-        if referral_code_obj.used:
-            return Response({'error': 'The referral code has already been used.'}, status=HTTP_400_BAD_REQUEST)
-
-        # Add the referral code to the user's used_referral_code field.
-        logger.debug('Add the referral code to the users used_referral_code field.')
-        user.used_referral_code = referral_code
-        user.save()
-
-        # Update the referral_users_list field of the referral code's owner.
-        referral_code_owner = referral_code_obj.owner
-        logger.debug(f'Get {referral_code_owner=}')
-        referral_code_owner.referral_users_list.add(user)
-        referral_code_owner.save()
-
-        return Response({'success': 'Referral code added successfully.'}, status=HTTP_200_OK)
-
-
 class GenerateTokenAndReferralCodeView(APIView):
     """Generate a token and referral code for the user and returns them."""
 
@@ -174,3 +110,11 @@ class GenerateTokenAndReferralCodeView(APIView):
 
         logger.warning('User not authenticated')
         return Response('User is not authenticated', status=HTTP_401_UNAUTHORIZED)
+
+
+class CurrentUserViewSet(viewsets.ModelViewSet):
+    """Viewset provides an API for users to get and edit their own data."""
+
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+    lookup_field = 'username'
