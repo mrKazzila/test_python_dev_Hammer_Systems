@@ -75,6 +75,9 @@ class UsersSerializer(serializers.ModelSerializer):
         referral_code = validated_data.get('referral_code')  # Referral code of instance user.
         used_referral_code = validated_data.get('used_referral_code')  # Referral code for add user instance.
 
+        if referral_code == used_referral_code:
+            return instance
+
         if used_referral_code:
             instance.used_referral_code = used_referral_code
             instance.save()
