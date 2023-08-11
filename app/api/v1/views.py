@@ -1,22 +1,21 @@
 import logging
 
-from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
-    HTTP_404_NOT_FOUND,
 )
 from rest_framework.views import APIView
 
 from referrals.models import ReferralCode
+from referrals.referral_services import create_referral_code_for_user
 from users.models import ActivationCode, User
 from users.tasks import send_activation_code
+from users.user_services import delete_referral_code_for_authenticated_user, generate_token_for_user
 from .serializers import TokenSerializer, UserSerializer, UsersSerializer
 
 logger = logging.getLogger(__name__)
@@ -122,22 +121,19 @@ class GenerateTokenAndReferralCodeView(APIView):
         serializer.is_valid(raise_exception=True)
 
         code_value = serializer.data.get('code')
-        code = get_object_or_404(ActivationCode, code=code_value)
+        activation_code = get_object_or_404(ActivationCode, code=code_value)
 
-        if not code:
+        if not activation_code:
             logger.warning('Activation code not found')
             return Response('Activation code not found', status=HTTP_400_BAD_REQUEST)
 
-        user = code.user
-        code.delete()
+        user = activation_code.user
+        activation_code.delete()
 
-        referral, _ = ReferralCode.objects.get_or_create(owner=user)
-        referral_code = str(referral.referral_code)
+        logger.info(f'Generating referral code and token for user {user.username}')
+        referral_code = create_referral_code_for_user(user_obj=user, referral_code_model=ReferralCode)
+        token = generate_token_for_user(user_obj=user, user_model=User)
 
-        logger.info(f'Generating token and referral code for user {user.username}')
-        user = User.objects.get(username=user)
-
-        token = default_token_generator.make_token(user)
         user.referral_code = referral_code
         user.save()
 
@@ -158,15 +154,7 @@ class GenerateTokenAndReferralCodeView(APIView):
 
         if user:
             referral = ReferralCode.objects.filter(owner=user).first()
+            return delete_referral_code_for_authenticated_user(referral_obj=referral)
 
-            if referral:
-                referral.delete()
-                logger.info('Referral code deleted')
-                return Response('Referral code successfully deleted', status=HTTP_204_NO_CONTENT)
-            else:
-                logger.warning('Referral code not found')
-                return Response('Referral code not found', status=HTTP_404_NOT_FOUND)
-
-        else:
-            logger.warning('User not authenticated')
-            return Response('User is not authenticated', status=HTTP_401_UNAUTHORIZED)
+        logger.warning('User not authenticated')
+        return Response('User is not authenticated', status=HTTP_401_UNAUTHORIZED)
