@@ -16,7 +16,7 @@ def send_activation_code(username):
     code = ActivationCode.objects.create(user=user)
     logger.info(f'ActivationCode for {user.username} is {code.code}')
 
-    # Some service for sms sending
+    # Some service for sms sending.
     time.sleep(2)
 
     return code.code
