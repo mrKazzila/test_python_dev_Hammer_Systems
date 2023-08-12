@@ -50,7 +50,7 @@ services:
     restart: always
     container_name: prod-nginx-1.25
     build:
-      context: docker/nginx
+      context: nginx
       dockerfile: Dockerfile
     ports:
       - "80:80"
