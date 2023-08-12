@@ -32,3 +32,4 @@ env/
 
 # my ignore
 /dump.rdb
+persistentdata/
