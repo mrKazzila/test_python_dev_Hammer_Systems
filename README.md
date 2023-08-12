@@ -309,3 +309,5 @@ Example:
 
 ## Additional material
 * [test-assignment](https://disk.yandex.ru/i/-t5XQ6cmWkNNxQ)
+* [v2.1.ReferralApiTest.postman_collection.json](readme/v2.1.ReferralApiTest.postman_collection.json)
+* [v2.ReferralApiTest.postman_collection.json](readme/v2.ReferralApiTest.postman_collection.json)
