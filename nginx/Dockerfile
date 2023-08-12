@@ -6,9 +6,8 @@ RUN \
         openssl
 RUN openssl dhparam -out /etc/ssl/dhparam.pem 2048
 
-RUN rm -d -R /etc/nginx/conf.d/
-COPY /conf.d /etc/nginx/conf.d
+RUN rm -d -R /etc/nginx/conf.d/ && \
+    rm /etc/nginx/nginx.conf \
 
-# Uncomment after generate ssl cert
-#RUN rm /etc/nginx/nginx.conf
-#COPY nginx.conf /etc/nginx/
+COPY /conf.d /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/
