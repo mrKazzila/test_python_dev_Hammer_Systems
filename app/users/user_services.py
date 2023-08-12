@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 from string import digits
@@ -31,3 +32,16 @@ def delete_referral_code_for_authenticated_user(referral_obj):
 
     logger.warning('Referral code not found')
     return Response('Referral code not found', status=HTTP_404_NOT_FOUND)
+
+
+def make_dict_obj_from_request_data(request_data):
+    """Create a dict object from the request data."""
+    logger.info(f'request_data={type(request_data)}')
+
+    if type(request_data) == dict:
+        return request_data
+
+    query_dict_to_dict = request_data.dict()
+    _content = query_dict_to_dict.get('_content')
+
+    return json.loads(_content)
