@@ -15,7 +15,11 @@ from referrals.models import ReferralCode
 from referrals.referral_services import create_referral_code_for_user
 from users.models import ActivationCode, User
 from users.tasks import send_activation_code
-from users.user_services import delete_referral_code_for_authenticated_user, generate_token_for_user
+from users.user_services import (
+    delete_referral_code_for_authenticated_user,
+    generate_token_for_user,
+    make_dict_obj_from_request_data,
+)
 from .serializers import TokenSerializer, UserSerializer, UsersSerializer
 
 logger = logging.getLogger(__name__)
@@ -25,6 +29,7 @@ class CreateUserAndSendConfirmCodeView(APIView):
     """Creates a user and sends a confirmation code to the user's phone number."""
 
     permission_classes = [AllowAny]
+    allowed_methods = ['POST', 'OPTIONS']
 
     def post(self, request):
         """Create a user and sends a confirmation code to the user's phone number.
@@ -35,7 +40,8 @@ class CreateUserAndSendConfirmCodeView(APIView):
         Returns:
             The HTTP response.
         """
-        serializer = UserSerializer(data=request.data)
+        request_data = make_dict_obj_from_request_data(request_data=request.data)
+        serializer = UserSerializer(data=request_data)
         serializer.is_valid(raise_exception=True)
 
         username = serializer.data.get('username')
@@ -58,6 +64,7 @@ class GenerateTokenAndReferralCodeView(APIView):
     """Generate a token and referral code for the user and returns them."""
 
     permission_classes = [AllowAny]
+    allowed_methods = ['POST', 'DELETE', 'OPTIONS']
 
     def post(self, request):
         """
@@ -69,7 +76,8 @@ class GenerateTokenAndReferralCodeView(APIView):
         Returns:
             The HTTP response.
         """
-        serializer = TokenSerializer(data=request.data)
+        request_data = make_dict_obj_from_request_data(request_data=request.data)
+        serializer = TokenSerializer(data=request_data)
         serializer.is_valid(raise_exception=True)
 
         code_value = serializer.data.get('code')
