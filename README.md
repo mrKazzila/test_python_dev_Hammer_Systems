@@ -57,7 +57,7 @@
 
 2. Prepare env with make
    ```bash
-   make prepare_env
+   make prepare_docker_env
    ```
 
 3. Run docker compose with make
