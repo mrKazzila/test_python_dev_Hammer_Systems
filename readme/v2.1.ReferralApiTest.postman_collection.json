@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "1f62a29f-4633-43bd-b08c-e8499fba8e5b",
+    "name": "ReferralApiTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29037132"
+  },
+  "item": [
+    {
+      "name": "root_api",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "user_signup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"username\": \"Bob\",\n\"phone_number\": \"45345678901\"\n}"
+        },
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/auth/signup/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "signup",
+            ""
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "activate_code",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"code\": \"<you_code_from_user_signup>\"\n}"
+        },
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/auth/code/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "code",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get_users_list",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/users/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "add_referral_code_for_user",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"Jhon2\",\n    \"phone_number\": \"12345678902\",\n    \"referral_code\": \"AEhdvf\",\n    \"used_referral_code\": \"<referral_code from another user>\",\n    \"referral_users_list\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/users/Jhon2/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "Jhon2",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create_new_user",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"Zak2\",\n    \"phone_number\": \"13345678901\",\n    \"referral_code\": \"mPiVyn\",\n    \"used_referral_code\": \"\"\n}"
+        },
+        "url": {
+          "raw": "http://195.133.197.215/api/v1/users/",
+          "protocol": "http",
+          "host": [
+            "195",
+            "133",
+            "197",
+            "215"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
