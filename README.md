@@ -73,16 +73,16 @@
 </details>
 
 <details>
-<summary>commands</summary>
+<summary>Local commands</summary>
 
 1. Firstly clone repo
    ```bash
    git clone git@github.com:mrKazzila/test_python_dev_Hammer_Systems.git
    ```
 
-2. Prepare env with make
+2. Prepare local env with make
    ```bash
-   make prepare_env
+   make prepare_local_env
    ```
 
 3. Settings Poetry with make
@@ -103,6 +103,16 @@
 6. Run Celery
    ```bash
    make celery_run
+   ```
+
+7. Run test with make
+   ```bash
+   make test
+   ```
+
+8. Run pre-commit with make
+   ```bash
+   make test_linters
    ```
 
 </details>
