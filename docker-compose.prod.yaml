@@ -11,7 +11,7 @@ services:
       - env/.env
     command: gunicorn --chdir app config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-       - ./persistentdata/static:/home/unprivilegeduser/referrals/static
+       - ./persistentdata/static:/home/unprivilegeduser/referrals/app/static
     expose:
       - 8000
     depends_on:
@@ -55,6 +55,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./persistentdata/static:/home/unprivilegeduser/referrals/static
+      - ./persistentdata/static:/home/unprivilegeduser/referrals/app/static
     depends_on:
       - django
