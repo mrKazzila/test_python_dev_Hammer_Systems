@@ -77,15 +77,18 @@ class UsersSerializer(serializers.ModelSerializer):
         if referral_code == used_referral_code:
             return instance
 
+        # Owner of referral code.
+        referrer_ref_code_obj = ReferralCode.objects.filter(referral_code=used_referral_code).first()
+
+        if referrer_ref_code_obj is None:
+            return instance
+
         if used_referral_code:
             instance.used_referral_code = used_referral_code
             instance.save()
             logger.debug(f'Save referral code {used_referral_code=} for user {instance=}')
 
         # Update the referral_users_list field of the referral code's owner.
-        # Owner of referral code.
-        referrer_ref_code_obj = ReferralCode.objects.filter(referral_code=used_referral_code).first()
-
         # User used referral code.
         referral_ref_code_obj = ReferralCode.objects.filter(referral_code=referral_code).first()
 
