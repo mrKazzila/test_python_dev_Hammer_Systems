@@ -80,3 +80,14 @@ test:
 test_linters:
 	pre-commit install
 	pre-commit run --all-files
+
+docker_run_prod:
+	docker-compose -f docker-compose.prod.yaml up -d --build
+
+docker_stop_prod:
+	docker-compose -f docker-compose.prod.yaml down -v
+
+docker_clean_prod:
+	docker-compose -f docker-compose.prod.yaml down -v && \
+	docker rmi --force $(docker images -aq) && \
+	docker volume prune && docker system prune
