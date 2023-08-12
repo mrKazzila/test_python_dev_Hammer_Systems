@@ -41,6 +41,9 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_ROOT_USER_ACTION=ignore \
     APP_HOME=/home/unprivilegeduser/referrals
 
+RUN mkdir $APP_HOME && \
+    mkdir $APP_HOME/static
+
 WORKDIR $APP_HOME
 
 COPY --from=venv /app/requirements.txt /$APP_HOME/requirements.txt
