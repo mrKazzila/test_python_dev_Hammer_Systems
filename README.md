@@ -20,8 +20,7 @@
   <a href="#tech-stack">Tech stack</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#additional-material">Additional material</a> •
-  <a href="http://195.133.197.215/api/v1/">Api link</a>
+  <a href="#additional-material">Additional material</a>
 </p>
 
 
